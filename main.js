@@ -1,39 +1,34 @@
 const apiUrl = "book.json";
 
 async function fetchBooks() {
-    try {
-        const response = await fetch(apiUrl);
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+    fetch("https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=AWLyXSaBO4y3tn7NLsarvg0fkuGREqCL")
+        .then((response) => {
+            response.json()
+                .then((data) => {
 
-        const data = await response.json();
-        displayBooks(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+                    displayBooks(data)
+
+                }).catch((err) => {
+                    console.log(err);
+                })
+        }).catch((err) => {
+            console.log(err);
+        })
 }
 
+
+
+
 function displayBooks(books) {
-    const bookListDiv = document.getElementById('bookList');
-    bookListDiv.innerHTML = '';
+    const ul = document.getElementById('books');
 
-    if (books.length === 0) {
-        bookListDiv.textContent = 'No books found.';
-        return;
-    }
+    books["results"]["books"].forEach((book) => {
 
-    const ul = document.createElement('ul');
-    books.forEach((book) => {
         const li = document.createElement('li');
         li.textContent = `${book.title} by ${book.author}`;
         ul.appendChild(li);
-    });
-
-    bookListDiv.appendChild(ul);
+    })
 }
-
-// Add a click event listener to the "Fetch Books" button
 const fetchBooksButton = document.getElementById('fetchBooks');
 fetchBooksButton.addEventListener('click', fetchBooks);
